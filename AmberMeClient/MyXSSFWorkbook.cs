@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
 
 namespace AmberMeClient
 {
@@ -135,22 +136,84 @@ namespace AmberMeClient
         }
 
         public void WriteToFile(IList<Task> list, Stream stream) {
-            var workbook = new XSSFWorkbook(stream);
+            var workbook = new HSSFWorkbook(stream);
             var sheet = workbook.GetSheet("个人周报汇总表");
             for (int i = 4; i < list.Count+4; i++)
             {
                var row= sheet.GetRow(i);
-               for (int j = 1; j < 21; j++)
+               for (int j = 0; j < 20; j++)
                {
                    switch (j) { 
-                       case 1:
+                       case 0:
                            row.GetCell(j).SetCellValue(list[i-4].EmpName);
+                           break;
+                       case 1:
+                           row.GetCell(j).SetCellValue(list[i - 4].TaskNum);
+                           break;
+                       case 2:
+                           row.GetCell(j).SetCellValue(list[i - 4].TaskName);
+                           break;
+                       case 3:
+                           row.GetCell(j).SetCellValue(list[i - 4].ProjectNum);
+                           break;
+                       case 4:
+                           row.GetCell(j).SetCellValue(list[i - 4].TaskType);
+                           break;
+                       case 5:
+                           row.GetCell(j).SetCellValue(list[i - 4].InPlan);
+                           break;
+                       case 6:
+                           row.GetCell(j).SetCellValue(list[i - 4].Description);
+                           break;
+                       case 7:
+                           row.GetCell(j).SetCellValue(list[i-4].Mon);
+                           break;                     
+                       case 8:
+                           row.GetCell(j).SetCellValue(list[i - 4].Tue);
+                           break;
+                       case 9:
+                           row.GetCell(j).SetCellValue(list[i - 4].Wen);
+                           break;
+                       case 10:
+                           row.GetCell(j).SetCellValue(list[i - 4].Thr);
+                           break;
+                       case 11:
+                           row.GetCell(j).SetCellValue(list[i - 4].Fir);
+                           break;
+                       case 12:
+                           row.GetCell(j).SetCellValue(list[i - 4].San);
+                           break;
+                       case 13:
+                           row.GetCell(j).SetCellValue(list[i - 4].Sun);
+                           break;
+                       case 14:
+                           row.GetCell(j).SetCellFormula(string.Format("SUM(H{0}:N{0})", i+1));                          
+                           break;
+                       case 15:                       
+                           var cellStyle = workbook.CreateCellStyle();
+                           cellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00%");
+                           row.GetCell(j).CellStyle = cellStyle;
+                           row.GetCell(j).SetCellValue(list[i - 4].Percent);
+                           break;
+                       case 16:
+                           row.GetCell(j).SetCellValue(list[i - 4].Result);
+                           break;
+                       case 17:
+                           row.GetCell(j).SetCellValue(list[i - 4].WillFinDate);
+                           break;
+                       case 18:
+                           row.GetCell(j).SetCellValue(list[i - 4].WillFinMD);
+                           break;
+                       case 19:
+                           row.GetCell(j).SetCellValue(list[i - 4].Advince);
+                           break;
+                       default:
                            break;
                    }
                }
             }
 
-            FileStream fs = File.Create("周报汇总.xlsx");
+            FileStream fs = File.Create("周报汇总.xls");
             workbook.Write(fs);
             fs.Close();
         }
