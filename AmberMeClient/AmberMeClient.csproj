@@ -34,19 +34,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\..\GitHub\npoi\solution\Lib\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
-      <HintPath>..\..\..\..\GitHub\npoi\solution\Lib\.net4\NPOI.dll</HintPath>
+      <HintPath>..\lib\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OOXML">
-      <HintPath>..\..\..\..\GitHub\npoi\solution\Lib\NPOI.OOXML.dll</HintPath>
+      <HintPath>..\lib\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXml4Net">
-      <HintPath>..\..\..\..\GitHub\npoi\solution\Lib\NPOI.OpenXml4Net.dll</HintPath>
+      <HintPath>..\lib\NPOI.OpenXml4Net.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXmlFormats">
-      <HintPath>..\..\..\..\GitHub\npoi\solution\Lib\NPOI.OpenXmlFormats.dll</HintPath>
+      <HintPath>..\lib\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
