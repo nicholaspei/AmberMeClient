@@ -18,6 +18,8 @@ namespace AmberMeClient
             var workbook = new XSSFWorkbook(stream);
             var sheet = workbook.GetSheet("个人周报");
             var employeeName = sheet.GetRow(2).Cells[15].ToString();
+            if(employeeName==string.Empty)
+                employeeName = sheet.GetRow(2).Cells[16].ToString();
             int maxrow = sheet.LastRowNum;
             for (int i = 4; i < maxrow-1; i++)
 			{
