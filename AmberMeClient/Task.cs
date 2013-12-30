@@ -37,7 +37,7 @@ namespace AmberMeClient
 
         public double Sum { get; set; }
 
-        public string Percent { get; set; }
+        public double Percent { get; set; }
 
         public string Result { get; set; }
 

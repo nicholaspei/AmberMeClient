@@ -98,7 +98,10 @@ namespace AmberMeClient
                                 task.Sum = 0;
                                 break;
                             case 15:
-                                task.Percent = this.CellValueTyper(cell).ToString();
+                                if (cell.CellType == CellType.Blank)
+                                    task.Percent = 0.0;
+                                else
+                                task.Percent = (double)this.CellValueTyper(cell);
                                 break;
                             case 16:
                                 task.Result = this.CellValueTyper(cell).ToString();
@@ -166,34 +169,58 @@ namespace AmberMeClient
                            row.GetCell(j).SetCellValue(list[i - 4].Description);
                            break;
                        case 7:
+                           if(list[i-4].Mon==0.0)
+                           row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i-4].Mon);
                            break;                     
                        case 8:
+                           if (list[i - 4].Tue == 0.0)
+                               row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].Tue);
                            break;
                        case 9:
+                           if (list[i - 4].Wen == 0.0)
+                           row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].Wen);
                            break;
                        case 10:
+                           if (list[i - 4].Thr == 0.0)
+                           row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].Thr);
                            break;
                        case 11:
+                           if (list[i - 4].Fir == 0.0)
+                           row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].Fir);
                            break;
                        case 12:
+                           if (list[i - 4].San == 0.0)
+                               row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].San);
                            break;
                        case 13:
+                           if (list[i - 4].Sun == 0.0)
+                               row.GetCell(j).SetCellValue("");
+                           else
                            row.GetCell(j).SetCellValue(list[i - 4].Sun);
                            break;
                        case 14:
                            row.GetCell(j).SetCellFormula(string.Format("SUM(H{0}:N{0})", i+1));                          
                            break;
                        case 15:                       
-                           var cellStyle = workbook.CreateCellStyle();
-                           cellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00%");
-                           row.GetCell(j).CellStyle = cellStyle;
-                           row.GetCell(j).SetCellValue(list[i - 4].Percent);
+                           //var cellStyle = workbook.CreateCellStyle();
+                           //cellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.0%");
+                           //row.GetCell(j).CellStyle = cellStyle;
+                           if (list[i - 4].Percent == 0.0)
+                               row.GetCell(j).SetCellValue("");
+                           else
+                           row.GetCell(j).SetCellValue((list[i - 4].Percent*100.0).ToString()+"%");
                            break;
                        case 16:
                            row.GetCell(j).SetCellValue(list[i - 4].Result);
