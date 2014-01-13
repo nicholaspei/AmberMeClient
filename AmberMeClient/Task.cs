@@ -39,6 +39,8 @@ namespace AmberMeClient
 
         public double Percent { get; set; }
 
+        public string PercentStr { get; set; }
+
         public string Result { get; set; }
 
         public string WillFinDate { get; set; }
