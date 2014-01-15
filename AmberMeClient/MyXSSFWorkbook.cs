@@ -411,9 +411,10 @@ namespace AmberMeClient
                 var row = sheet.GetRow(nwstartrow+1);
                 if(row==null)
                 {
-                    sheet.CopyRow(nwstartrow,nwstartrow+1);
-                    row=sheet.GetRow(nwstartrow+1);
+                    sheet.CopyRow(5,nwstartrow+1);
+                    row=sheet.GetRow(nwstartrow+1);                 
                 }
+                
                 for (int j = 0; j < 20; j++)
                 {
                     switch (j)
