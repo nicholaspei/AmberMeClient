@@ -17,19 +17,21 @@ namespace AmberMeClient
 
             var streamManager = new StreamManager();
             var bookManager = new MyXSSFWorkbook();
-            var stream = streamManager.GetStreamByName("个人周报汇总-TS中行总行BJ13003FW-20140106.xlsx");
+            var stream = streamManager.GetStreamByName("个人周报汇总-TS中行总行BJ13003FW.xlsx");
+            var nwstream = streamManager.GetStreamByName("项目下周计划周报-运维数据库.xlsx");
             var list = bookManager.GetAllTask(stream);
+            var nwlist = bookManager.getNextWeekTask(nwstream);
             var mergeList = new List<Task>();
-            var taskNumList = list.OrderBy(s=>s.TaskNum).Select(s => s.TaskNum).Distinct();
+            var taskNumList = list.OrderBy(s=>s.TaskNum).Select(s =>new { s.TaskNum,s.TaskName}).Distinct();
 
-            foreach (var taskNum in taskNumList)
+            foreach (var taskdis in taskNumList)
             {
-                var sameNumTasks = list.Where(l => l.TaskNum == taskNum);
+                var sameNumTasks = list.Where(l => l.TaskNum == taskdis.TaskNum);
 
                 var taskContent = string.Empty;
                 double workTime = 0.0;
                 var workers = string.Empty;
-
+                var allresult=string.Empty;
                 //合并
                 foreach (var task in sameNumTasks)
                 { 
@@ -42,15 +44,25 @@ namespace AmberMeClient
 
                 //人员合并
                     workers += task.EmpName;
-                    workers += "\n";
+                    workers += "、";
+
+                //提交结果合并
+                    allresult+=task.Result;
+                    allresult+="\n";
                 }
                 var mergetask = new Task();
-                mergetask.TaskNum = taskNum;
+                mergetask.TaskNum = taskdis.TaskNum;
+                mergetask.TaskName = taskdis.TaskName;
+                mergetask.Result = allresult;
                 mergetask.Sum = workTime;
                 mergetask.Description = taskContent;
+                mergetask.EmpName = workers;
+                mergetask.Advince = string.Empty;               
                 mergeList.Add(mergetask);
             }
 
+            var writeFile = streamManager.GetWriteStream("成品目标template.xls");
+            bookManager.WriteAllTaskToFile(mergeList, nwlist, writeFile);
             Console.Read();
         }
 

@@ -358,6 +358,193 @@ namespace AmberMeClient
                     list.Add(task);
                 }
             }
+          
+            return list;
+        }
+
+        public void WriteAllTaskToFile(IList<Task> list,IList<NextWeekTask> nwlist, Stream stream)
+        {
+            var workbook = new HSSFWorkbook(stream);
+            var sheet = workbook.GetSheet("项目周报");
+            for (int i = 5; i < list.Count + 5; i++)
+            {
+                var row = sheet.GetRow(i);                
+                if(row.Cells[0].ToString()=="Amber")
+                {
+
+                }
+                else
+                {                   
+                    sheet.CopyRow(i - 1, i);
+                    row = sheet.GetRow(i);
+                }
+
+                for (int j = 0; j < 20; j++)
+                {
+                    switch (j)
+                    {
+                        case 1:
+                            row.GetCell(j).SetCellValue(list[i - 5].TaskNum);
+                            break;
+                        case 6:
+                            row.GetCell(j).SetCellValue(list[i - 5].Description);
+                            break;
+                        case 14:
+                            row.GetCell(j).SetCellValue(list[i - 5].Sum);
+                            break;
+                        case 16:
+                            row.GetCell(j).SetCellValue(list[i - 5].EmpName);
+                            break;
+                        case 17:
+                            row.GetCell(j).SetCellValue(list[i - 5].Result);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+          
+            //开始写入下周计划
+            for (int i = 0; i < nwlist.Count;i++)
+            {
+                var nwstartrow = sheet.LastRowNum;
+                var row = sheet.GetRow(nwstartrow+1);
+                if(row==null)
+                {
+                    sheet.CopyRow(nwstartrow,nwstartrow+1);
+                    row=sheet.GetRow(nwstartrow+1);
+                }
+                for (int j = 0; j < 20; j++)
+                {
+                    switch (j)
+                    {    
+                        case 0:
+                            row.Cells[0].SetCellValue(nwlist[i].TaskNum);
+                            break;
+                        case 1:
+                            row.Cells[1].SetCellValue(nwlist[i].TaskName);
+                            break;
+                        case 2:
+                            row.Cells[2].SetCellValue(nwlist[i].ProjectNum);
+                            break;
+                        case 3:
+                            row.Cells[3].SetCellValue(nwlist[i].TaskType);
+                            break;
+                        case 4:
+                            row.Cells[4].SetCellValue(nwlist[i].InPlan);
+                            break;
+                        case 5:
+                            row.Cells[5].SetCellValue(nwlist[i].Description);
+                            break;
+                        case 6:
+                            row.Cells[6].SetCellValue(nwlist[i].Percent);
+                            break;
+                        case 7:
+                            row.Cells[7].SetCellValue(nwlist[i].StartTime);
+                            break;
+                        case 8:
+                            row.Cells[8].SetCellValue(nwlist[i].EndTime);
+                            break;
+                        case 9:
+                            row.Cells[9].SetCellValue(nwlist[i].ManDay);
+                            break;
+                        case 10:
+                            row.Cells[10].SetCellValue(nwlist[i].Employee);
+                            break;
+                        case 11:
+                            row.Cells[11].SetCellValue(nwlist[i].PlanEmployee);
+                            break;
+                        case 12:
+                            row.Cells[12].SetCellValue(nwlist[i].Result);
+                            break;
+                        case 13:
+                            row.Cells[13].SetCellValue(nwlist[i].Commit);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            FileStream fs = File.Create("成品目标.xls");
+            workbook.Write(fs);
+            fs.Close();
+        }
+
+        public IList<NextWeekTask> getNextWeekTask(Stream nwstream)
+        {
+            var list = new List<NextWeekTask>();
+            var workbook = new XSSFWorkbook(nwstream);
+            var sheet = workbook.GetSheet("项目周报");
+            int maxrow = sheet.LastRowNum-1;
+            for (int i = 5; i < maxrow - 1; i++)
+            {
+                var currentRow = sheet.GetRow(i);
+                var cells = currentRow.Cells;
+                var task = new NextWeekTask();
+                if (currentRow != null)
+                {
+                    foreach (var cell in cells)
+                    {
+                        switch (cell.ColumnIndex)
+                        {
+                            case 1:
+                                task.TaskNum = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 2:
+                                task.TaskName = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 3:
+                                task.ProjectNum = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 4:
+                                task.TaskType = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 5:
+                                task.InPlan = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 6:
+                                task.Description = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 7:
+                                task.Percent = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 8:
+                                task.StartTime = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 9:
+                                task.EndTime = this.CellValueTyper(cell).ToString();
+                                break;                           
+                            case 10:
+                                try
+                                {
+                                task.ManDay =int.Parse(this.CellValueTyper(cell).ToString());
+                                }
+                                catch{
+                                 task.ManDay=0;
+                                }
+                                break;
+                            case 11:
+                                task.Employee = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 12:
+                                task.PlanEmployee = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 13:
+                                task.Result = this.CellValueTyper(cell).ToString();
+                                break;
+                            case 14:
+                                task.Commit = this.CellValueTyper(cell).ToString();
+                                break;
+                          
+                            default:
+                                break;
+                        }
+                    }
+                    list.Add(task);
+                }
+            }
+
             return list;
         }
     }
