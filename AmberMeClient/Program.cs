@@ -14,13 +14,19 @@ namespace AmberMeClient
     {
         static void Main(string[] args)
         {
-
+            var fileManager=new FileManager();
             var streamManager = new StreamManager();
             var bookManager = new MyXSSFWorkbook();
             var stream = streamManager.GetStreamByName("个人周报汇总-TS中行总行BJ13003FW.xlsx");
-            var nwstream = streamManager.GetStreamByName("项目下周计划周报-运维数据库.xlsx");
+           
             var list = bookManager.GetAllTask(stream);
-            var nwlist = bookManager.getNextWeekTask(nwstream);
+            var nwlist = new List<NextWeekTask>();
+            foreach (var file in fileManager.GetAllNextWeekFilNames())
+            {
+                var nwstream = streamManager.GetStreamByName(file);
+                var empnwlist = bookManager.getNextWeekTask(nwstream);
+                nwlist.AddRange(empnwlist);
+            }           
             var mergeList = new List<Task>();
             var taskNumList = list.OrderBy(s=>s.TaskNum).Select(s =>new { s.TaskNum,s.TaskName}).Distinct();
 
@@ -63,6 +69,7 @@ namespace AmberMeClient
 
             var writeFile = streamManager.GetWriteStream("成品目标template.xls");
             bookManager.WriteAllTaskToFile(mergeList, nwlist, writeFile);
+            Console.WriteLine("导出完成，请按任意键结束！");
             Console.Read();
         }
 

@@ -477,7 +477,19 @@ namespace AmberMeClient
             var workbook = new XSSFWorkbook(nwstream);
             var sheet = workbook.GetSheet("项目周报");
             int maxrow = sheet.LastRowNum-1;
-            for (int i = 5; i < maxrow - 1; i++)
+
+            int startrow = 0,endrow=maxrow;
+
+            for (int i = 0; i < maxrow - 1; i++)
+            {
+                var currentRow = sheet.GetRow(i);
+                var startcellLbl=currentRow.Cells[0].ToString();
+                var endcellLbl=currentRow.Cells[0].ToString();
+                if (startcellLbl == "下周工作计划")
+                    startrow = i;                
+            }
+
+            for (int i = startrow+2; i < maxrow - 1; i++)
             {
                 var currentRow = sheet.GetRow(i);
                 var cells = currentRow.Cells;
@@ -510,18 +522,32 @@ namespace AmberMeClient
                                 task.Percent = this.CellValueTyper(cell).ToString();
                                 break;
                             case 8:
-                                task.StartTime = this.CellValueTyper(cell).ToString();
-                                break;
+                                try
+                                {
+                                    task.StartTime = cell.DateCellValue.ToString("yyyy-MM-dd");
+                                }
+                                catch
+                                {
+                                    task.StartTime = string.Empty;
+                                }
+                                    break;
                             case 9:
-                                task.EndTime = this.CellValueTyper(cell).ToString();
-                                break;                           
+                                    try
+                                    {
+                                        task.EndTime = cell.DateCellValue.ToString("yyyy-MM-dd"); ;
+                                    }
+                                    catch {
+                                        task.EndTime = string.Empty;
+                                    }
+                                    break;
                             case 10:
                                 try
                                 {
-                                task.ManDay =int.Parse(this.CellValueTyper(cell).ToString());
+                                    task.ManDay = int.Parse(this.CellValueTyper(cell).ToString());
                                 }
-                                catch{
-                                 task.ManDay=0;
+                                catch
+                                {
+                                    task.ManDay = 0;
                                 }
                                 break;
                             case 11:
@@ -536,7 +562,7 @@ namespace AmberMeClient
                             case 14:
                                 task.Commit = this.CellValueTyper(cell).ToString();
                                 break;
-                          
+
                             default:
                                 break;
                         }

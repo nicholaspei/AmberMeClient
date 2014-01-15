@@ -25,5 +25,21 @@ namespace AmberMeClient
 
             return list;
         }
+
+        public IList<string> GetAllNextWeekFilNames() {
+            var directoryPath = Directory.GetCurrentDirectory() + "\\nextweek";
+            DirectoryInfo dirInfo = new DirectoryInfo(directoryPath);
+            FileInfo[] files = dirInfo.GetFiles();
+            var list = new List<string>();
+            foreach (var file in files)
+            {
+                if (file.Extension == ".xlsx" && file.Name != "项目周报-项目编号-汇报日期测试.xlsx")
+                {
+                    list.Add(file.FullName);
+                }
+            }
+            return list;
+        }
+      
     }
 }
